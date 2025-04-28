@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "449303278713",
+    "project_id": "taskly-flutter-pj",
+    "storage_bucket": "taskly-flutter-pj.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449303278713:android:fd68b8473dbe5fd74910a8",
+        "android_client_info": {
+          "package_name": "com.example.taskly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbLWUObTuTDjuYmRW8fr7qJWYs6eR75WU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
