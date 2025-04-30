@@ -62,7 +62,10 @@ dependencies:
   build_runner: ^2.4.15
   json_serializable: ^6.9.4
 
+  # Fundamental UI packages
+  flutter_svg: ^2.1.0
   flutter_native_splash: ^2.4.6
+  gap:
 
 flutter_native_splash:
   color: "#ffffff"

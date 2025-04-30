@@ -17,7 +17,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Tu peux aussi avoir d'autres routes, ex:
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => LoginScreen(),
       ),
     ],
   );
