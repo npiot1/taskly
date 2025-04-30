@@ -1,4 +1,4 @@
-library login;
+library signup;
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -8,17 +8,18 @@ import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/framework/widgets/input.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  SignUpScreen({super.key});
 
-  final nameController = TextEditingController();
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: const Text('Sign Up')),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -29,22 +30,24 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 200,
-                    width: 200,
-                    child: Image.asset('assets/images/logo.jpeg'),
-                  ),
                   CustomTextInput(
-                    controller: nameController,
+                    controller: usernameController,
                     label: "Pseudo",
-                    hintText: "Enter your pseudo",
+                    hintText: "Choose your username",
+                    textSize: AppFontSize.XXLARGE_TEXT,
+                  ),
+                  const SizedBox(height: 16),
+                  CustomTextInput(
+                    controller: emailController,
+                    label: "Email",
+                    hintText: "Enter your email",
                     textSize: AppFontSize.XXLARGE_TEXT,
                   ),
                   const SizedBox(height: 16),
                   CustomTextInput(
                     controller: passwordController,
                     label: "Password",
-                    hintText: "******",
+                    hintText: "Create a password",
                     obscureText: true,
                     textSize: AppFontSize.XXLARGE_TEXT,
                   ),
@@ -56,8 +59,10 @@ class LoginScreen extends StatelessWidget {
                       width: double.infinity,
                       child: AppButton(
                         color: ApplicationColors.GREY_2,
-                        text: "Login",
-                        action: () {},
+                        text: "Sign Up",
+                        action: () {
+                          // TODO: implémenter l'action
+                        },
                       ),
                     ),
                   ),
@@ -70,26 +75,26 @@ class LoginScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
                     children: [
                       Text(
-                        "Doesn't have an account ?",
+                        "Already have an account?",
                         style: TextStyle(
                           fontSize: AppFontSize.XLARGE_TEXT,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Gap(20),
+                      const Gap(20),
                       SizedBox(
                         width: double.infinity,
                         child: AppButton(
                           color: ApplicationColors.GREY_2,
-                          text: "Sign up",
+                          text: "Login",
                           action: () {
-                            context.push('/signup');
+                            context.pop();
                           },
                         ),
                       ),
