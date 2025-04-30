@@ -28,6 +28,11 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    height: 200,
+                    width: 200,
+                    child: Image.asset('assets/images/logo.jpeg'),
+                  ),
                   CustomTextInput(
                     controller: nameController,
                     label: "Pseudo",
@@ -71,7 +76,10 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       Text(
                         "Doesn't have an account ?",
-                        style: TextStyle(fontSize: AppFontSize.XLARGE_TEXT, fontWeight: FontWeight.bold,),
+                        style: TextStyle(
+                          fontSize: AppFontSize.XLARGE_TEXT,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Gap(20),
                       SizedBox(
