@@ -1,21 +1,23 @@
 library login;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taskly/framework/auth/auth_provider.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/framework/widgets/input.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   LoginScreen({super.key});
 
-  final nameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: Text('Login')),
@@ -35,9 +37,9 @@ class LoginScreen extends StatelessWidget {
                     child: Image.asset('assets/images/logo.jpeg'),
                   ),
                   CustomTextInput(
-                    controller: nameController,
-                    label: "Pseudo",
-                    hintText: "Enter your pseudo",
+                    controller: emailController,
+                    label: "Email",
+                    hintText: "Enter your email",
                     textSize: AppFontSize.XXLARGE_TEXT,
                   ),
                   const SizedBox(height: 16),
@@ -57,7 +59,38 @@ class LoginScreen extends StatelessWidget {
                       child: AppButton(
                         color: ApplicationColors.GREY_2,
                         text: "Login",
-                        action: () {},
+                        action: () async {
+
+                          final auth = ref.read(authRepositoryProvider);
+                          try {
+                            var u = await auth.login(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                            if (u != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Connected !'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Error : Invalid credentials',
+                                  ),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error : ${e.toString()}'),
+                              ),
+                            );
+                          }
+
+                        },
                       ),
                     ),
                   ),

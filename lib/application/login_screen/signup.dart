@@ -1,14 +1,16 @@
 library signup;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taskly/framework/auth/auth_provider.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/framework/widgets/input.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends ConsumerWidget {
   SignUpScreen({super.key});
 
   final usernameController = TextEditingController();
@@ -16,7 +18,7 @@ class SignUpScreen extends StatelessWidget {
   final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text('Sign Up')),
@@ -60,8 +62,35 @@ class SignUpScreen extends StatelessWidget {
                       child: AppButton(
                         color: ApplicationColors.GREY_2,
                         text: "Sign Up",
-                        action: () {
-                          // TODO: implémenter l'action
+                        action: () async {
+                          final auth = ref.read(authRepositoryProvider);
+                          try {
+                            var u = await auth.signUp(
+                              email: emailController.text,
+                              password: passwordController.text,
+                            );
+                            if (u != null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Account successfully created!'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                    'Error creating account',
+                                  ),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Error : ${e.toString()}'),
+                              ),
+                            );
+                          }
                         },
                       ),
                     ),
