@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taskly/framework/auth/firebase_providers.dart';
+
+class TaskListScreen extends ConsumerWidget {
+  const TaskListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tasksAsync = ref.watch(userTasksProvider);
+
+    return tasksAsync.when(
+      data: (tasks) {
+        if (tasks.isEmpty) {
+          return const Center(child: Text("Aucune tâche trouvée"));
+        }
+        return ListView.builder(
+          itemCount: tasks.length,
+          itemBuilder: (context, index) {
+            final task = tasks[index];
+            return ListTile(
+              title: Text(task['title'] ?? 'Sans titre'),
+              subtitle: Text(task['description'] ?? ''),
+            );
+          },
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, _) => Center(child: Text("Erreur : $err")),
+    );
+  }
+}

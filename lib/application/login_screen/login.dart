@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:taskly/framework/auth/auth_provider.dart';
+import 'package:taskly/framework/auth/firebase_providers.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/framework/widgets/input.dart';
+import 'package:taskly/main.dart';
 
 class LoginScreen extends ConsumerWidget {
   LoginScreen({super.key});
@@ -69,12 +70,13 @@ class LoginScreen extends ConsumerWidget {
                                     email: emailController.text,
                                     password: passwordController.text,
                                   );
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  scaffoldMessengerKey.currentState
+                                      ?.showSnackBar(
                                     SnackBar(
                                       content: Text(res),
                                       duration: const Duration(seconds: 2),
                                     ),
-                                  );
+                                      );
                                 },
                               ),
                             ),

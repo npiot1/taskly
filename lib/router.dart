@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:taskly/application/home_screen/home.dart';
 import 'package:taskly/application/login_screen/login.dart';
 import 'package:taskly/application/login_screen/signup.dart';
-import 'package:taskly/framework/auth/auth_provider.dart';
+import 'package:taskly/framework/auth/firebase_providers.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
