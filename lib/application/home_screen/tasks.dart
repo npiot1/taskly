@@ -14,15 +14,16 @@ class TaskListScreen extends ConsumerWidget {
         if (tasks.isEmpty) {
           return const Center(child: Text("Aucune tâche trouvée"));
         }
-        return ListView.builder(
-          itemCount: tasks.length,
-          itemBuilder: (context, index) {
-            final task = tasks[index];
-            return ListTile(
-              title: Text(task['title'] ?? 'Sans titre'),
-              subtitle: Text(task['description'] ?? ''),
-            );
-          },
+        return Expanded(
+          child: ListView.builder(
+            itemCount: tasks.length,
+            itemBuilder: (context, index) {
+              final task = tasks[index];
+              return ListTile(
+                title: Text(task.toString()),
+              );
+            },
+          ),
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
