@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taskly/application/home_screen/drawer.dart';
 import 'package:taskly/application/home_screen/tasks.dart';
-import 'package:taskly/framework/auth/firebase_providers.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
-import 'package:taskly/framework/widgets/button.dart';
-import 'package:taskly/main.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

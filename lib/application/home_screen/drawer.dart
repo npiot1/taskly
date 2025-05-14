@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
-import 'package:taskly/framework/auth/firebase_providers.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
+import 'package:taskly/framework/providers/auth.dart';
+import 'package:taskly/framework/providers/user.dart';
+import 'package:taskly/framework/repositories/auth_repository.dart';
 import 'package:taskly/framework/utils/date.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/main.dart';
@@ -12,11 +13,11 @@ class DrawerWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appUserAsync = ref.read(appUserProvider);
-    final auth = ref.read(authStateProvider);
+    final user = ref.watch(currentUserProvider);
+    final auth = ref.watch(authStateProvider);
 
     return Drawer(
-      child: appUserAsync.when(
+      child: user.when(
         data:
             (user) => Column(
               children: [
@@ -87,7 +88,7 @@ class DrawerWidget extends ConsumerWidget {
                 ),
               ],
             ),
-        loading: () => CircularProgressIndicator(),
+        loading: () => Center(child: CircularProgressIndicator()),
         error: (e, _) => Text("Erreur : $e"),
       ),
     );

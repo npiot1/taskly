@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:taskly/framework/auth/firebase_providers.dart';
+import 'package:taskly/framework/providers/user.dart';
 
 class TaskListScreen extends ConsumerWidget {
   const TaskListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tasksAsync = ref.watch(userTasksProvider);
+    final tasksAsync = ref.watch(currentUserTasksProvider);
 
     return tasksAsync.when(
       data: (tasks) {
