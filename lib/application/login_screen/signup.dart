@@ -73,6 +73,7 @@ class SignUpScreen extends ConsumerWidget {
                                   final auth = ref.read(authRepositoryProvider);
 
                                   var res = await auth.signUp(
+                                    username: usernameController.text,
                                     email: emailController.text,
                                     password: passwordController.text,
                                   );

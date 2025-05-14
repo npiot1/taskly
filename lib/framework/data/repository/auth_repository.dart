@@ -1,13 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepository {
   Future<String> signUp({
+    required String username,
     required String email,
     required String password,
   }) async {
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'pseudo': username,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      await user.updateDisplayName(username);
+      await user.reload();
+      }
       return "Account successfully created!";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

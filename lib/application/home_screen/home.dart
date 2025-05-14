@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taskly/application/home_screen/drawer.dart';
 import 'package:taskly/application/home_screen/tasks.dart';
 import 'package:taskly/framework/auth/firebase_providers.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
@@ -11,38 +12,20 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-      return Scaffold(
-          appBar: AppBar(
-                title: Text('Home Screen'),
-            ),
-            body: Center(
-                child: Column(
-                  children: [
-                    Text('Welcome to the Home Screen!'),
-                    TaskListScreen(),
-                    Spacer(),
-                    AppButton(color: ApplicationColors.ORANGE, text: "Logout", action: () {
-                      var auth = ref.read(authRepositoryProvider);
-                      auth.logout().then((value) {
-                        scaffoldMessengerKey.currentState
-                                      ?.showSnackBar(
-                          SnackBar(
-                            content: Text("Logout successful"),
-                          ),
-                        );
-                      }).catchError((error) {
-                        scaffoldMessengerKey.currentState
-                                      ?.showSnackBar(
-                          SnackBar(
-                            content: Text("Logout failed: $error"),
-                          ),
-                        );
-                      });
-                    }),
-                  ],
-                ),
-          
-            ),
-        );
+    return Scaffold(
+      drawer: DrawerWidget(),
+      backgroundColor: ApplicationColors.WHITE,
+      appBar: AppBar(title: Text('Home Screen')),
+      body: Center(
+        child: Column(
+          children: [
+            Text('Welcome to the Home Screen!'),
+            TaskListScreen(),
+            Spacer(),
+            Text("bottom"),
+          ],
+        ),
+      ),
+    );
   }
 }
