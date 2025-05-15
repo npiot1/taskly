@@ -10,7 +10,11 @@ final currentUserProvider = FutureProvider<AppUser>((ref) async {
     throw Exception("No user logged in");
   }
   final userRepo = ref.read(userRepositoryProvider);
-  return userRepo.getUserProfile(authUser.uid);
+  final userProfile = await userRepo.getUserProfile(authUser.uid);
+  if (userProfile == null) {
+    throw Exception("User profile not found");
+  }
+  return userProfile;
 });
 
 final currentUserTasksProvider = StreamProvider.autoDispose<List<Task>>((ref) {

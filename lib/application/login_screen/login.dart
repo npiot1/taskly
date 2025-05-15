@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/repositories/auth_repository.dart';
@@ -73,7 +74,7 @@ class LoginScreen extends ConsumerWidget {
                                   scaffoldMessengerKey.currentState
                                       ?.showSnackBar(
                                     SnackBar(
-                                      content: Text(res),
+                                      content: Text(res.data ?? res.errorMessage!),
                                       duration: const Duration(seconds: 2),
                                     ),
                                       );
