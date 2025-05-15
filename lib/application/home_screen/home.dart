@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taskly/application/home_screen/drawer.dart';
-import 'package:taskly/application/home_screen/tasks.dart';
+import 'package:taskly/application/task_screens/tasks.dart';
+import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -16,10 +17,30 @@ class HomeScreen extends ConsumerWidget {
       body: Center(
         child: Column(
           children: [
-            Text('Welcome to the Home Screen!'),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Tasks',
+                style: TextStyle(fontSize: AppFontSize.XXLARGE_TEXT),
+              ),
+            ),
             TaskListScreen(),
             Spacer(),
-            Text("bottom"),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+              margin: EdgeInsets.only(right: 16.0, bottom: 16.0),
+              child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                shape: CircleBorder(),
+                padding: EdgeInsets.all(16),
+                backgroundColor: ApplicationColors.MAIN_COLOR, 
+              ),
+                child: Icon(Icons.add, color: Colors.white),
+              ),
+              ),
+            ),
           ],
         ),
       ),

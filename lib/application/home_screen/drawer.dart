@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/providers/auth.dart';
 import 'package:taskly/framework/providers/user.dart';
@@ -28,18 +29,24 @@ class DrawerWidget extends ConsumerWidget {
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                        children: [
                         user.photoUrl != null
-                            ? CircleAvatar(
-                              backgroundImage: NetworkImage(user.photoUrl!),
-                              radius: 40,
-                            )
-                            : CircleAvatar(
-                              radius: 40,
-                              child: Icon(Icons.person, size: 40),
-                            ),
+                          ? CircleAvatar(
+                            backgroundImage: NetworkImage(user.photoUrl!),
+                            radius: 40,
+                          )
+                          : CircleAvatar(
+                            radius: 40,
+                            child: Icon(Icons.person, size: 40),
+                          ),
                         SizedBox(height: 10),
-                        Text(user.pseudo),
+                        Text(
+                          user.pseudo,
+                          style: TextStyle(
+                          color: Colors.white,
+                          fontSize: AppFontSize.XLARGE_TEXT,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -48,40 +55,91 @@ class DrawerWidget extends ConsumerWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              "mail : ${auth.value?.email}",
-                            ),
-                                                        Text(
-                              "account created : ${user.createdAt.toSpokenLanguage()}",
-                            ),
-                          ],
+                      Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        ListTile(
+                          leading: Icon(Icons.email, color: ApplicationColors.MAIN_COLOR),
+                          title: Text(
+                          "Email",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: AppFontSize.LARGE_TEXT,
+                          ),
+                          ),
+                          subtitle: Text(
+                          auth.value?.email ?? "Not available",
+                          style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
+                          ),
                         ),
+                        Divider(),
+                        ListTile(
+                          leading: Icon(Icons.calendar_today, color: ApplicationColors.MAIN_COLOR),
+                          title: Text(
+                          "Account Created",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: AppFontSize.LARGE_TEXT,
+                          ),
+                          ),
+                          subtitle: Text(
+                          user.createdAt.toSpokenLanguage(),
+                          style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
+                          ),
+                        ),
+                        ],
+                      ),
                       ),
                       Spacer(),
-                      AppButton(
-                        margin: const EdgeInsets.symmetric(vertical: 20),
-                        color: ApplicationColors.MAIN_COLOR,
-                        text: "Logout",
-                        action: () {
+                      Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                        AppButton(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          color: ApplicationColors.MAIN_COLOR,
+                          text: "Account",
+                          colorText: ApplicationColors.WHITE,
+                          action: () {
+                          Navigator.pushNamed(context, '/account');
+                          },
+                        ),
+                        AppButton(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          color: ApplicationColors.MAIN_COLOR,
+                          text: "Settings",
+                          colorText: ApplicationColors.WHITE,
+                          action: () {
+                          Navigator.pushNamed(context, '/settings');
+                          },
+                        ),
+                        AppButton(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          color: Colors.red,
+                          text: "Logout",
+                          colorText: ApplicationColors.WHITE,
+                          action: () {
                           var auth = ref.read(authRepositoryProvider);
                           auth
-                              .logout()
-                              .then((value) {
-                                scaffoldMessengerKey.currentState?.showSnackBar(
-                                  SnackBar(content: Text("Logout successful")),
-                                );
-                              })
-                              .catchError((error) {
-                                scaffoldMessengerKey.currentState?.showSnackBar(
-                                  SnackBar(
-                                    content: Text("Logout failed: $error"),
-                                  ),
-                                );
-                              });
-                        },
+                            .logout()
+                            .then((value) {
+                              scaffoldMessengerKey.currentState?.showSnackBar(
+                              SnackBar(content: Text("Logout successful")),
+                              );
+                            })
+                            .catchError((error) {
+                              scaffoldMessengerKey.currentState?.showSnackBar(
+                              SnackBar(
+                                content: Text("Logout failed: $error"),
+                              ),
+                              );
+                            });
+                          },
+                        ),
+                        ],
+                      ),
                       ),
                     ],
                   ),
