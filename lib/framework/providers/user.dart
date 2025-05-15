@@ -18,6 +18,13 @@ final currentUserProvider = FutureProvider<AppUser>((ref) async {
 });
 
 final currentUserTasksProvider = StreamProvider.autoDispose<List<Task>>((ref) {
+  final currentUser = ref.watch(currentUserProvider);
+  if (currentUser.isLoading) {
+    return const Stream.empty();
+  }
+  if (currentUser.hasError) {
+    return const Stream.empty(); 
+  }
   final userRepo = ref.read(userRepositoryProvider);
   return userRepo.getUserTasks();
 });
