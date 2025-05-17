@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 
 class AppButton extends StatelessWidget {
-
   const AppButton({
-    super.key, 
+    super.key,
     required this.color,
     this.text = "",
     this.icon,
@@ -20,7 +18,10 @@ class AppButton extends StatelessWidget {
     this.paddingHorizontal = 20,
     this.paddingVertical = 8,
     this.width,
-    this.margin
+    this.margin,
+    this.isIconLeading = false,
+    this.isIconTrailing = false,
+    this.isIconOnly = false,
   });
 
   final Color color;
@@ -30,18 +31,64 @@ class AppButton extends StatelessWidget {
   final Color colorText;
   final double textSize;
   final double height;
-  final SvgPicture? icon;
+  final Icon? icon;
   final BorderRadius? specificCornerRadius;
   final bool? noRadius;
   final double paddingHorizontal;
   final double paddingVertical;
   final double? width;
   final EdgeInsets? margin;
-
+  final bool isIconLeading;
+  final bool isIconTrailing;
+  final bool isIconOnly;
 
   @override
   Widget build(BuildContext context) {
     final isActive = action != null;
+
+    Widget buildContent() {
+      if (isIconOnly && icon != null) {
+        return Tooltip(
+          margin: EdgeInsets.only(bottom: 10),
+          preferBelow: false,
+          message: text,
+          child: icon,
+        );
+      }
+
+      final textWidget = Text(
+        text,
+        style: TextStyle(fontSize: textSize, color: colorText, fontWeight: FontWeight.bold),
+      );
+
+      if (icon == null) {
+        return textWidget;
+      }
+
+      final iconWidget = Tooltip(
+        margin: EdgeInsets.only(bottom: 10),
+        preferBelow: false,
+        message: text,
+        child: icon,
+      );
+
+      if (isIconLeading) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [iconWidget, SizedBox(width: 8), textWidget],
+        );
+      } else if (isIconTrailing) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [textWidget, SizedBox(width: 8), iconWidget],
+        );
+      }
+
+      return textWidget;
+    }
+
     return Container(
       height: height,
       width: width,
@@ -49,35 +96,23 @@ class AppButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: action,
         style: ButtonStyle(
-          padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.symmetric(horizontal: paddingHorizontal, vertical: paddingVertical)),
-            backgroundColor: isFilledButton ? WidgetStateProperty.all<Color>(isActive ? color : ApplicationColors.GREY_2)
-                : WidgetStateProperty.all<Color>(Colors.white),
-            shape: !noRadius! ? specificCornerRadius != null ?
-            WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: specificCornerRadius!,
-                    side: BorderSide(color: isFilledButton ? Colors.transparent : color, width: 2)
-                )) :
-            WidgetStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.LOW_RADIUS),
-                  side: BorderSide(color: isFilledButton ? Colors.transparent : color, width: 2)
-                )) : null
+          padding: WidgetStatePropertyAll<EdgeInsets>(
+              EdgeInsets.symmetric(horizontal: paddingHorizontal, vertical: paddingVertical)),
+          backgroundColor: WidgetStatePropertyAll<Color>(
+              isFilledButton ? (isActive ? color : ApplicationColors.GREY_2) : Colors.white),
+          shape: !noRadius!
+              ? specificCornerRadius != null
+                  ? WidgetStatePropertyAll<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: specificCornerRadius!,
+                          side: BorderSide(color: isFilledButton ? Colors.transparent : color, width: 2)))
+                  : WidgetStatePropertyAll<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.LOW_RADIUS),
+                          side: BorderSide(color: isFilledButton ? Colors.transparent : color, width: 2)))
+              : null,
         ),
-        child: !ApplicationLayout.isPhone ?
-        //TEXT PRIORITY IF NOT PHONE
-        text.isNotEmpty ?
-        FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Text(text, style: TextStyle(fontSize: textSize, color: colorText, fontWeight: FontWeight.bold),)
-        )
-            : Tooltip(margin: EdgeInsets.only(bottom: 10), preferBelow: false, message: text, child: icon) :
-        //ICON PRIORITY IF PHONE
-        icon == null ?
-        FittedBox(
-          fit: BoxFit.fitWidth,
-          child: Text(text, style: TextStyle(fontSize: textSize, color: colorText, fontWeight: FontWeight.bold),)
-      ) : Tooltip(margin: EdgeInsets.only(bottom: 10),preferBelow: false, message: text, child: icon)
+        child: buildContent(),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/providers/auth.dart';
@@ -95,51 +96,65 @@ class DrawerWidget extends ConsumerWidget {
                       Spacer(),
                       Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
+                        child: Column(
                         children: [
-                        AppButton(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          color: ApplicationColors.MAIN_COLOR,
-                          text: "Account",
-                          colorText: ApplicationColors.WHITE,
-                          action: () {
-                          Navigator.pushNamed(context, '/account');
-                          },
-                        ),
-                        AppButton(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          color: ApplicationColors.MAIN_COLOR,
-                          text: "Settings",
-                          colorText: ApplicationColors.WHITE,
-                          action: () {
-                          Navigator.pushNamed(context, '/settings');
-                          },
-                        ),
-                        AppButton(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          color: Colors.red,
-                          text: "Logout",
-                          colorText: ApplicationColors.WHITE,
-                          action: () {
-                          var auth = ref.read(authRepositoryProvider);
-                          auth
-                            .logout()
-                            .then((value) {
+                          SizedBox(
+                          width: double.infinity,
+                          child: AppButton(
+                            icon: Icon(Icons.account_circle, size: 20, color: Colors.white),
+                            isIconLeading: true,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            color: ApplicationColors.MAIN_COLOR,
+                            text: "Account",
+                            colorText: ApplicationColors.WHITE,
+                            action: () {
+                            Navigator.pushNamed(context, '/account');
+                            },
+                          ),
+                          ),
+                          SizedBox(
+                          width: double.infinity,
+                          child: AppButton(
+                            icon: Icon(Icons.settings, size: 20, color: Colors.white),
+                            isIconLeading: true,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            color: ApplicationColors.MAIN_COLOR,
+                            text: "Settings",
+                            colorText: ApplicationColors.WHITE,
+                            action: () {
+                            Navigator.pushNamed(context, '/settings');
+                            },
+                          ),
+                          ),
+                          SizedBox(
+                          width: double.infinity,
+                          child: AppButton(
+                            icon: Icon(Icons.logout, size: 20, color: Colors.white),
+                            isIconLeading: true,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            color: Colors.red,
+                            text: "Logout",
+                            colorText: ApplicationColors.WHITE,
+                            action: () {
+                            var auth = ref.read(authRepositoryProvider);
+                            auth
+                              .logout()
+                              .then((value) {
                               scaffoldMessengerKey.currentState?.showSnackBar(
                               SnackBar(content: Text("Logout successful")),
                               );
-                            })
-                            .catchError((error) {
+                            }).catchError((error) {
                               scaffoldMessengerKey.currentState?.showSnackBar(
                               SnackBar(
                                 content: Text("Logout failed: $error"),
                               ),
                               );
                             });
-                          },
-                        ),
+                            },
+                          ),
+                          ),
                         ],
-                      ),
+                        ),
                       ),
                     ],
                   ),

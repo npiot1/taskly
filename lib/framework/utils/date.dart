@@ -8,7 +8,8 @@ extension DateTimeSpokenLanguage on DateTime {
     } else if (difference.inDays == 1) {
       return "Yesterday";
     } else if (difference.inDays < 7) {
-      return "$difference.inDays days ago";
+      final days = difference.inDays;
+      return "$days day${days > 1 ? 's' : ''} ago";
     } else if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
       return "$weeks week${weeks > 1 ? 's' : ''} ago";
