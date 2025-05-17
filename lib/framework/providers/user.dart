@@ -28,3 +28,4 @@ final currentUserTasksProvider = StreamProvider.autoDispose<List<Task>>((ref) {
   final userRepo = ref.read(userRepositoryProvider);
   return userRepo.getUserTasks();
 });
+
