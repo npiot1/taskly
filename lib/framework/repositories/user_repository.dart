@@ -74,7 +74,7 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
             .where('userId', isEqualTo: user.uid);
 
         return query.snapshots().map((snapshot) =>
-            snapshot.docs.map((doc) => Task.fromJson(doc.data())).toList());
+            snapshot.docs.map((doc) => Task.fromJson(doc.data()).copyWith(id: doc.id)).toList());
       },
       loading: () => const Stream.empty(),
       error: (error, _) => Stream.error(error.toString()),
@@ -89,5 +89,15 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
       return Result.failure(e.toString());
     }
   }
+
+  Future<Result<bool>> updateTask(Task task) async {
+    try {
+      await _firestore.collection('tasks').doc(task.id).update(task.toJson());
+      return Result.success(true);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+    
+    }
 
   }

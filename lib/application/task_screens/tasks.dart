@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:taskly/framework/models/task.dart';
 import 'package:taskly/framework/providers/user.dart';
 
@@ -48,7 +49,7 @@ class TaskListScreen extends ConsumerWidget {
                   ),
                   trailing: Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
-                    // Handle task tap
+                    context.push('/edit/${task.id}');
                   },
                 ),
               );

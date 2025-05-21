@@ -5,7 +5,6 @@ import 'package:taskly/application/task_screens/task_controller.dart';
 import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/models/task.dart';
 import 'package:taskly/framework/providers/auth.dart';
-import 'package:taskly/framework/providers/user.dart';
 
 class CreateTaskScreen extends ConsumerWidget {
   CreateTaskScreen({Key? key}) : super(key: key);
@@ -61,20 +60,47 @@ class CreateTaskScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _dueDateController,
+                  readOnly: true,
                   decoration: const InputDecoration(
-                    labelText: 'Due Date (YYYY-MM-DD)',
-                    border: OutlineInputBorder(),
+                  labelText: 'Due Date & Time (YYYY-MM-DD HH:MM:SS)',
+                  border: OutlineInputBorder(),
                   ),
+                  onTap: () async {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.now(),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                    final dt = DateTime(
+                      pickedDate.year,
+                      pickedDate.month,
+                      pickedDate.day,
+                      pickedTime.hour,
+                      pickedTime.minute,
+                    );
+                    _dueDateController.text =
+                      dt.toString().substring(0, 19); // "YYYY-MM-DD HH:MM:SS"
+                    }
+                  }
+                  },
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a due date';
-                    }
-                    try {
-                      DateTime.parse(value);
-                    } catch (_) {
-                      return 'Please enter a valid date';
-                    }
-                    return null;
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a due date and time';
+                  }
+                  try {
+                    DateTime.parse(value);
+                  } catch (_) {
+                    return 'Please enter a valid date and time';
+                  }
+                  return null;
                   },
                 ),
                 const SizedBox(height: 16),

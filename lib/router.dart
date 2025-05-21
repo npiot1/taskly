@@ -5,6 +5,7 @@ import 'package:taskly/application/home_screen/home.dart';
 import 'package:taskly/application/login_screen/login.dart';
 import 'package:taskly/application/login_screen/signup.dart';
 import 'package:taskly/application/task_screens/create_task.dart';
+import 'package:taskly/application/task_screens/edit_task.dart';
 import 'package:taskly/framework/providers/auth.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -36,6 +37,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/signup', builder: (context, state) => SignUpScreen()),
       GoRoute(path: '/home', builder: (context, state) => HomeScreen()),
       GoRoute(path: '/new', builder: (context, state) => CreateTaskScreen()),
+      GoRoute(
+        path: '/edit/:id',
+        name: 'edit',
+        builder: (context, state) {
+          final taskId = state.pathParameters['id']!;
+          return EditTaskScreen(id: taskId);
+        },
+      ),
     ],
   );
 });

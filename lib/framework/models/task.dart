@@ -8,6 +8,7 @@ part 'task.g.dart';
 @freezed
 abstract class Task with _$Task {
   const factory Task({
+    String? id,
     required bool completed,
     @Default("") String description,
     @TimestampConverter() required DateTime dueDate,
