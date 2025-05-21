@@ -26,7 +26,6 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             TaskListScreen(),
-            Spacer(),
             Align(
               alignment: Alignment.centerRight,
               child: Container(

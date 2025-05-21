@@ -17,7 +17,7 @@ class CreateTaskScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskState = ref.watch(taskControllerProvider);
+    final taskState = ref.watch(taskControllerProvider.select((state) => state.state));
     final taskController = ref.read(taskControllerProvider.notifier);
 
     return Scaffold(

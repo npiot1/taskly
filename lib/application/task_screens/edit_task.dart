@@ -12,7 +12,7 @@ class EditTaskScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskFromFirestore = ref.watch(currentUserTaskByIdProvider(id));
-    final taskState = ref.watch(editableTaskProvider);
+    final taskState = ref.watch(taskControllerProvider.select((state) => state.task));
     final taskController = ref.read(taskControllerProvider.notifier);
 
     return taskFromFirestore.when(
