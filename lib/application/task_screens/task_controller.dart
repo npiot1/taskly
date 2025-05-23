@@ -52,6 +52,18 @@ class TaskController extends StateNotifier<TaskScreenState> {
     }
   }
 
+  Future<void> deleteTask(String taskId) async {
+    state = state.copyWith(state: const TaskState.loading());
+    final result = await userRepository.deleteTask(taskId);
+
+    if (result.isFailure) {
+      state = state.copyWith(state: TaskState.error(result.errorMessage!));
+      return;
+    } else {
+      state = state.copyWith(state: const TaskState.success());
+    }
+  }
+
   Future<Task?> getTaskById(String id) async {
     state = state.copyWith(state: const TaskState.loading());
     final result = await userRepository.getTaskById(id);

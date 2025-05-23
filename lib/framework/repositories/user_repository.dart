@@ -8,11 +8,10 @@ import 'package:taskly/framework/providers/auth.dart';
 import 'package:taskly/framework/repositories/auth_repository.dart';
 
 final userRepositoryProvider = Provider<UserRepository>((ref) {
-    return UserRepository(FirebaseFirestore.instance, ref);
-  });
+  return UserRepository(FirebaseFirestore.instance, ref);
+});
 
-  class UserRepository {
-
+class UserRepository {
   final FirebaseFirestore _firestore;
   final Ref ref;
   UserRepository(this._firestore, this.ref);
@@ -73,8 +72,12 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
             .collection('tasks')
             .where('userId', isEqualTo: user.uid);
 
-        return query.snapshots().map((snapshot) =>
-            snapshot.docs.map((doc) => Task.fromJson(doc.data()).copyWith(id: doc.id)).toList());
+        return query.snapshots().map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => Task.fromJson(doc.data()).copyWith(id: doc.id))
+                  .toList(),
+        );
       },
       loading: () => const Stream.empty(),
       error: (error, _) => Stream.error(error.toString()),
@@ -110,7 +113,14 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
     } catch (e) {
       return Result.failure(e.toString());
     }
-    
-    }
-
   }
+
+  Future<Result<bool>> deleteTask(String taskId) async {
+    try {
+      await _firestore.collection('tasks').doc(taskId).delete();
+      return Result.success(true);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+  }
+}

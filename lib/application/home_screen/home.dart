@@ -18,13 +18,6 @@ class HomeScreen extends ConsumerWidget {
       body: Center(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                'Tasks',
-                style: TextStyle(fontSize: AppFontSize.XXLARGE_TEXT),
-              ),
-            ),
             TaskListScreen(),
             Align(
               alignment: Alignment.centerRight,
