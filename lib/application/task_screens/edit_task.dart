@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskly/application/task_screens/task_controller.dart';
 import 'package:taskly/framework/business/task_state.dart';
-import 'package:taskly/framework/providers/user.dart';
 
 class EditTaskScreen extends ConsumerWidget {
   final String id;
