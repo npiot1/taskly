@@ -1,12 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taskly/application/task_screens/task_screen_state.dart';
+import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/models/task.dart';
 import 'package:taskly/framework/repositories/user_repository.dart';
 
 //final editableTaskProvider = StateProvider.autoDispose<Task?>((ref) => null);
 
-final taskControllerProvider = StateNotifierProvider<TaskController, TaskScreenState>(
+final taskControllerProvider = StateNotifierProvider.autoDispose<TaskController, TaskScreenState>(
   (ref) {
     final userRepo = ref.read(userRepositoryProvider);
     return TaskController(userRepo, ref);
@@ -22,6 +23,7 @@ class TaskController extends StateNotifier<TaskScreenState> {
   Future<void> createTask(Task task) async {
     state = state.copyWith(state: const TaskState.loading());
     final result = await userRepository.createTask(task);
+    result.showNotification();
 
     if (result.isFailure) {
       state = state.copyWith(state: TaskState.error(result.errorMessage!));
@@ -42,6 +44,7 @@ class TaskController extends StateNotifier<TaskScreenState> {
   Future<void> updateTask(Task task) async {
     state = state.copyWith(state: const TaskState.loading());
     final result = await userRepository.updateTask(task);
+    result.showNotification();
 
     if (result.isFailure) {
       state = state.copyWith(state: TaskState.error(result.errorMessage!));
@@ -55,6 +58,7 @@ class TaskController extends StateNotifier<TaskScreenState> {
   Future<void> deleteTask(String taskId) async {
     state = state.copyWith(state: const TaskState.loading());
     final result = await userRepository.deleteTask(taskId);
+    result.showNotification();
 
     if (result.isFailure) {
       state = state.copyWith(state: TaskState.error(result.errorMessage!));

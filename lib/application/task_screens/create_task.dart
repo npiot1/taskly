@@ -17,7 +17,9 @@ class CreateTaskScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskState = ref.watch(taskControllerProvider.select((state) => state.state));
+    final taskState = ref.watch(
+      taskControllerProvider.select((state) => state.state),
+    );
     final taskController = ref.read(taskControllerProvider.notifier);
 
     return Scaffold(
@@ -62,45 +64,47 @@ class CreateTaskScreen extends ConsumerWidget {
                   controller: _dueDateController,
                   readOnly: true,
                   decoration: const InputDecoration(
-                  labelText: 'Due Date & Time (YYYY-MM-DD HH:MM:SS)',
-                  border: OutlineInputBorder(),
+                    labelText: 'Due Date & Time (YYYY-MM-DD HH:MM:SS)',
+                    border: OutlineInputBorder(),
                   ),
                   onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2100),
-                  );
-                  if (pickedDate != null) {
-                    TimeOfDay? pickedTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2100),
                     );
-                    if (pickedTime != null) {
-                    final dt = DateTime(
-                      pickedDate.year,
-                      pickedDate.month,
-                      pickedDate.day,
-                      pickedTime.hour,
-                      pickedTime.minute,
-                    );
-                    _dueDateController.text =
-                      dt.toString().substring(0, 19); // "YYYY-MM-DD HH:MM:SS"
+                    if (pickedDate != null) {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (pickedTime != null) {
+                        final dt = DateTime(
+                          pickedDate.year,
+                          pickedDate.month,
+                          pickedDate.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+                        _dueDateController.text = dt.toString().substring(
+                          0,
+                          19,
+                        ); // "YYYY-MM-DD HH:MM:SS"
+                      }
                     }
-                  }
                   },
                   validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a due date and time';
-                  }
-                  try {
-                    DateTime.parse(value);
-                  } catch (_) {
-                    return 'Please enter a valid date and time';
-                  }
-                  return null;
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a due date and time';
+                    }
+                    try {
+                      DateTime.parse(value);
+                    } catch (_) {
+                      return 'Please enter a valid date and time';
+                    }
+                    return null;
                   },
                 ),
                 const SizedBox(height: 16),
@@ -125,7 +129,6 @@ class CreateTaskScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
-                    
                     if (_formKey.currentState!.validate()) {
                       var currentUser = ref.read(authStateProvider).value;
                       final newTask = Task(
@@ -134,17 +137,10 @@ class CreateTaskScreen extends ConsumerWidget {
                         dueDate: DateTime.parse(_dueDateController.text),
                         name: _titleController.text,
                         priority: int.parse(_priorityController.text),
-                        userId: currentUser!.uid, // Replace with actual user ID
+                        userId: currentUser!.uid, 
                       );
 
                       await taskController.createTask(newTask);
-
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Task created successfully!'),
-                        ),
-                      );
 
                       context.push("/home");
                     }

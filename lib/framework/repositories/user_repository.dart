@@ -107,7 +107,7 @@ class UserRepository {
   Future<Result<bool>> createTask(Task task) async {
     try {
       await _firestore.collection('tasks').add(task.toJson());
-      return Result.success(true);
+      return Result.success(true, "Task created successfully");
     } catch (e) {
       return Result.failure(e.toString());
     }
@@ -116,7 +116,7 @@ class UserRepository {
   Future<Result<bool>> updateTask(Task task) async {
     try {
       await _firestore.collection('tasks').doc(task.id).update(task.toJson());
-      return Result.success(true);
+      return Result.success(true, "Task updated successfully");
     } catch (e) {
       return Result.failure(e.toString());
     }
@@ -125,7 +125,7 @@ class UserRepository {
   Future<Result<bool>> deleteTask(String taskId) async {
     try {
       await _firestore.collection('tasks').doc(taskId).delete();
-      return Result.success(true);
+      return Result.success(true, "Task deleted successfully");
     } catch (e) {
       return Result.failure(e.toString());
     }

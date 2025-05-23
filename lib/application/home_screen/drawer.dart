@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/providers/auth.dart';
@@ -144,9 +145,7 @@ class DrawerWidget extends ConsumerWidget {
                               action: () {
                                 var auth = ref.read(authRepositoryProvider);
                                 auth.logout().then((value) {
-                                  scaffoldMessengerKey.currentState?.showSnackBar(
-                                    SnackBar(content: Text("Logout successful")),
-                                  );
+                                  value.showNotification();
                                 }).catchError((error) {
                                   scaffoldMessengerKey.currentState?.showSnackBar(
                                     SnackBar(

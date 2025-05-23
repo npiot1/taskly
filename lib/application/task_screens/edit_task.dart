@@ -25,11 +25,6 @@ class EditTaskScreen extends ConsumerWidget {
         body: const Center(child: CircularProgressIndicator()),
       );
     } else if (fetchState is TaskError) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Error: ${fetchState.message}")));
-      });
       context.pop();
       taskController.resetEditableTask();
     }
@@ -147,11 +142,6 @@ class EditTaskScreen extends ConsumerWidget {
                       priority: int.parse(priorityController.text),
                     );
                     taskController.updateTask(updatedTask);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Task updated successfully'),
-                      ),
-                    );
                     context.pop();
                   }
                 },

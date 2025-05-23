@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskly/application/task_screens/task_controller.dart';
+import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/models/task.dart';
@@ -19,12 +20,6 @@ class TaskListScreen extends ConsumerWidget {
 
     if (taskState is TaskLoading) {
       return Expanded(child: Center(child: CircularProgressIndicator()));
-    } else if (taskState is TaskError) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Erreur : ${taskState.message}")),
-        );
-      });
     }
 
     return tasksAsync.when(
@@ -75,12 +70,7 @@ class TaskListScreen extends ConsumerWidget {
                   return confirm ?? false;
                 },
                 onDismissed: (direction) {
-                  ref
-                      .read(taskControllerProvider.notifier)
-                      .deleteTask(task.id!);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("task deleted : ${task.name}")),
-                  );
+                  ref.read(taskControllerProvider.notifier).deleteTask(task.id!);
                 },
                 child: Card(
                   margin: const EdgeInsets.symmetric(

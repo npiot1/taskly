@@ -12,7 +12,7 @@ class AuthRepository {
   final Ref ref;
   AuthRepository(this._firebaseAuth, this.ref);
 
-  Future<Result<String>> signUp({
+  Future<Result> signUp({
     required String username,
     required String email,
     required String password,
@@ -29,7 +29,7 @@ class AuthRepository {
             .read(userRepositoryProvider)
             .createAppUser(user, username);
         if (res.isSuccess) {
-          return Result.success("Account successfully created!");
+          return Result.success(null, "Account created successfully!");
         } else {
           return Result.failure(res.errorMessage!);
         }
@@ -47,7 +47,7 @@ class AuthRepository {
     }
   }
 
-  Future<Result<String>> login({
+  Future<Result> login({
     required String email,
     required String password,
   }) async {
@@ -56,7 +56,7 @@ class AuthRepository {
         email: email,
         password: password,
       );
-      return Result.success("Connected!");
+      return Result.success(null, "Connected!");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return Result.failure('No user found for that email.');
@@ -67,10 +67,10 @@ class AuthRepository {
     }
   }
 
-  Future<Result<String>> logout() async {
+  Future<Result> logout() async {
     try {
       await _firebaseAuth.signOut();
-      return Result.success("Logged out successfully!");
+      return Result.success(null, "Logged out successfully!");
     } catch (e) {
       return Result.failure("Error logging out (${e.toString()})");
     }
