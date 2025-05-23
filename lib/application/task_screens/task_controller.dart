@@ -44,13 +44,25 @@ class TaskController extends StateNotifier<TaskScreenState> {
     }
   }
 
+  Future<void> updateCompleted(Task task) async {
+    state = state.copyWith(state: const TaskState.loading());
+    task = task.copyWith(completed: !task.completed);
+    final result = await userRepository.updateTask(task);
+    if (result.isFailure) {
+      state = state.copyWith(state: TaskState.error(result.errorMessage!));
+      return;
+    } else {
+      state = state.copyWith(state: const TaskState.success());
+    }
+  }
+
   void reset() => state = state.copyWith(state: const TaskState.idle());
 
   void resetEditableTask() {
     state = state.copyWith(task: null);
   }
 
-  void setCompleted(bool value) {
+  void setEditCompleted(bool value) {
     state = state.copyWith(
       task: state.task?.copyWith(completed: value),
     );

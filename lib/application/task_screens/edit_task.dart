@@ -136,7 +136,7 @@ class EditTaskScreen extends ConsumerWidget {
                     title: const Text('Completed'),
                     value: taskState.completed,
                     onChanged: (value) {
-                      taskController.setCompleted(value);
+                      taskController.setEditCompleted(value);
                     },
                   ),
                   const SizedBox(height: 16),
