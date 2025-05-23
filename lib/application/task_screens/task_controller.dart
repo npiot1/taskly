@@ -31,6 +31,14 @@ class TaskController extends StateNotifier<TaskScreenState> {
     }
   }
 
+  Future<void> load() async {
+    state = state.copyWith(state: const TaskState.loading());
+  }
+
+  Future<void> success() async {
+    state = state.copyWith(state: const TaskState.success());
+  }
+
   Future<void> updateTask(Task task) async {
     state = state.copyWith(state: const TaskState.loading());
     final result = await userRepository.updateTask(task);
@@ -41,6 +49,21 @@ class TaskController extends StateNotifier<TaskScreenState> {
     } else {
       resetEditableTask();
       state = state.copyWith(state: const TaskState.success());
+    }
+  }
+
+  Future<Task?> getTaskById(String id) async {
+    state = state.copyWith(state: const TaskState.loading());
+    final result = await userRepository.getTaskById(id);
+    if (result.isFailure) {
+      state = state.copyWith(state: TaskState.error(result.errorMessage!));
+      return null;
+    } else {
+      state = state.copyWith(
+        task: result.data,
+        state: const TaskState.success(),
+      );
+      return result.data!;
     }
   }
 

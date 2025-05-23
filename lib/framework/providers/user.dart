@@ -29,20 +29,3 @@ final currentUserTasksProvider = StreamProvider.autoDispose<List<Task>>((ref) {
   return userRepo.getUserTasks();
 });
 
-final currentUserTaskByIdProvider = StreamProvider.autoDispose.family<Task?, String>((ref, taskId) {
-  final tasksAsync = ref.watch(currentUserTasksProvider);
-  if (tasksAsync.isLoading) {
-    return const Stream.empty();
-  }
-  if (tasksAsync.hasError) {
-    return const Stream.empty();
-  }
-  final tasks = tasksAsync.value ?? [];
-  return Stream.value(
-    tasks.firstWhere(
-      (task) => task.id == taskId,
-      orElse: () => throw Exception('Task not found'),
-    ),
-  );
-});
-

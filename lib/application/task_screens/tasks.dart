@@ -12,13 +12,19 @@ class TaskListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(currentUserTasksProvider);
-    final taskState = ref.watch(taskControllerProvider.select((state) => state.state));
+    final taskState = ref.watch(
+      taskControllerProvider.select((state) => state.state),
+    );
 
-    if(taskState is TaskLoading) {
+    if (taskState is TaskLoading) {
       return Expanded(child: Center(child: CircularProgressIndicator()));
     } else if (taskState is TaskError) {
-      return Center(child: Text("Erreur : ${taskState.message}"));
-    } 
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Erreur : ${taskState.message}")),
+        );
+      });
+    }
 
     return tasksAsync.when(
       data: (tasks) {
@@ -45,7 +51,9 @@ class TaskListScreen extends ConsumerWidget {
                 child: ListTile(
                   leading: GestureDetector(
                     onTap: () {
-                      ref.read(taskControllerProvider.notifier).updateCompleted(task);
+                      ref
+                          .read(taskControllerProvider.notifier)
+                          .updateCompleted(task);
                     },
                     child: Icon(
                       task.completed
@@ -72,6 +80,7 @@ class TaskListScreen extends ConsumerWidget {
                   trailing: Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     context.push('/edit/${task.id}');
+                    ref.read(taskControllerProvider.notifier).getTaskById(task.id!);
                   },
                 ),
               );

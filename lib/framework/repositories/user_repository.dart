@@ -81,6 +81,19 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
     );
   }
 
+  Future<Result<Task?>> getTaskById(String taskId) async {
+    try {
+      final doc = await _firestore.collection('tasks').doc(taskId).get();
+      if (!doc.exists) {
+        return Result.success(null);
+      }
+      final task = Task.fromJson(doc.data()!).copyWith(id: doc.id);
+      return Result.success(task);
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+  }
+
   Future<Result<bool>> createTask(Task task) async {
     try {
       await _firestore.collection('tasks').add(task.toJson());
