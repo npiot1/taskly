@@ -134,7 +134,7 @@ class TaskListScreen extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => Expanded(child: const Center(child: CircularProgressIndicator())),
       error: (err, _) => Center(child: Text("Erreur : $err")),
     );
   }

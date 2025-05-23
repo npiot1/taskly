@@ -16,6 +16,13 @@ class UserRepository {
   final Ref ref;
   UserRepository(this._firestore, this.ref);
 
+  Stream<AppUser?> watchAppUser(String uid) {
+    return _firestore.collection('users').doc(uid).snapshots().map((doc) {
+      if (!doc.exists) return null;
+      return AppUser.fromJson(doc.data()!);
+    });
+  }
+
   Future<Result<bool>> createAppUser(User user, String username) async {
     try {
       await _firestore.collection('users').doc(user.uid).set({
@@ -41,7 +48,7 @@ class UserRepository {
 
       return AppUser.fromJson(doc.data()!);
     } catch (e) {
-      return null;
+      throw Exception("Error fetching user profile: ${e.toString()}");
     }
   }
 

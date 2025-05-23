@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskly/application/home_screen/drawer.dart';
 import 'package:taskly/application/task_screens/tasks.dart';
-import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 
 class HomeScreen extends ConsumerWidget {

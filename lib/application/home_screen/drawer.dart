@@ -14,154 +14,160 @@ class DrawerWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(currentUserProvider);
+    final user = ref.watch(currentAppUserProvider);
     final auth = ref.watch(authStateProvider);
 
     return Drawer(
       child: user.when(
-        data:
-            (user) => Column(
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: ApplicationColors.MAIN_COLOR,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                        user.photoUrl != null
-                          ? CircleAvatar(
-                            backgroundImage: NetworkImage(user.photoUrl!),
-                            radius: 40,
-                          )
-                          : CircleAvatar(
-                            radius: 40,
-                            child: Icon(Icons.person, size: 40),
-                          ),
-                        SizedBox(height: 10),
-                        Text(
-                          user.pseudo,
-                          style: TextStyle(
-                          color: Colors.white,
-                          fontSize: AppFontSize.XLARGE_TEXT,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+        data: (user) {
+          if (user == null) {
+            return const Expanded(
+              child: Center(
+                child: Text("user not found"),
+              ),
+            );
+          }
+          return Column(
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: ApplicationColors.MAIN_COLOR,
                 ),
-                Expanded(
+                child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        ListTile(
-                          leading: Icon(Icons.email, color: ApplicationColors.MAIN_COLOR),
-                          title: Text(
-                          "Email",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: AppFontSize.LARGE_TEXT,
-                          ),
-                          ),
-                          subtitle: Text(
-                          auth.value?.email ?? "Not available",
-                          style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
-                          ),
-                        ),
-                        Divider(),
-                        ListTile(
-                          leading: Icon(Icons.calendar_today, color: ApplicationColors.MAIN_COLOR),
-                          title: Text(
-                          "Account Created",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: AppFontSize.LARGE_TEXT,
-                          ),
-                          ),
-                          subtitle: Text(
-                          user.createdAt.toSpokenLanguage(),
-                          style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
-                          ),
-                        ),
-                        ],
-                      ),
-                      ),
-                      Spacer(),
-                      Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Column(
-                        children: [
-                          SizedBox(
-                          width: double.infinity,
-                          child: AppButton(
-                            icon: Icon(Icons.account_circle, size: 20, color: Colors.white),
-                            isIconLeading: true,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            color: ApplicationColors.MAIN_COLOR,
-                            text: "Account",
-                            colorText: ApplicationColors.WHITE,
-                            action: () {
-                            Navigator.pushNamed(context, '/account');
-                            },
-                          ),
-                          ),
-                          SizedBox(
-                          width: double.infinity,
-                          child: AppButton(
-                            icon: Icon(Icons.settings, size: 20, color: Colors.white),
-                            isIconLeading: true,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            color: ApplicationColors.MAIN_COLOR,
-                            text: "Settings",
-                            colorText: ApplicationColors.WHITE,
-                            action: () {
-                            Navigator.pushNamed(context, '/settings');
-                            },
-                          ),
-                          ),
-                          SizedBox(
-                          width: double.infinity,
-                          child: AppButton(
-                            icon: Icon(Icons.logout, size: 20, color: Colors.white),
-                            isIconLeading: true,
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            color: Colors.red,
-                            text: "Logout",
-                            colorText: ApplicationColors.WHITE,
-                            action: () {
-                            var auth = ref.read(authRepositoryProvider);
-                            auth
-                              .logout()
-                              .then((value) {
-                              scaffoldMessengerKey.currentState?.showSnackBar(
-                              SnackBar(content: Text("Logout successful")),
-                              );
-                            }).catchError((error) {
-                              scaffoldMessengerKey.currentState?.showSnackBar(
-                              SnackBar(
-                                content: Text("Logout failed: $error"),
-                              ),
-                              );
-                            });
-                            },
-                          ),
-                          ),
-                        ],
+                      user.photoUrl != null
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(user.photoUrl!),
+                              radius: 40,
+                            )
+                          : CircleAvatar(
+                              radius: 40,
+                              child: Icon(Icons.person, size: 40),
+                            ),
+                      SizedBox(height: 10),
+                      Text(
+                        user.pseudo,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: AppFontSize.XLARGE_TEXT,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-        loading: () => Center(child: CircularProgressIndicator()),
-        error: (e, _) => Text("Erreur : $e"),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: Icon(Icons.email, color: ApplicationColors.MAIN_COLOR),
+                            title: Text(
+                              "Email",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: AppFontSize.LARGE_TEXT,
+                              ),
+                            ),
+                            subtitle: Text(
+                              auth.value?.email ?? "Not available",
+                              style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
+                            ),
+                          ),
+                          Divider(),
+                          ListTile(
+                            leading: Icon(Icons.calendar_today, color: ApplicationColors.MAIN_COLOR),
+                            title: Text(
+                              "Account Created",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: AppFontSize.LARGE_TEXT,
+                              ),
+                            ),
+                            subtitle: Text(
+                              user.createdAt.toSpokenLanguage(),
+                              style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              icon: Icon(Icons.account_circle, size: 20, color: Colors.white),
+                              isIconLeading: true,
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              color: ApplicationColors.MAIN_COLOR,
+                              text: "Account",
+                              colorText: ApplicationColors.WHITE,
+                              action: () {
+                                Navigator.pushNamed(context, '/account');
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              icon: Icon(Icons.settings, size: 20, color: Colors.white),
+                              isIconLeading: true,
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              color: ApplicationColors.MAIN_COLOR,
+                              text: "Settings",
+                              colorText: ApplicationColors.WHITE,
+                              action: () {
+                                Navigator.pushNamed(context, '/settings');
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              icon: Icon(Icons.logout, size: 20, color: Colors.white),
+                              isIconLeading: true,
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              color: Colors.red,
+                              text: "Logout",
+                              colorText: ApplicationColors.WHITE,
+                              action: () {
+                                var auth = ref.read(authRepositoryProvider);
+                                auth.logout().then((value) {
+                                  scaffoldMessengerKey.currentState?.showSnackBar(
+                                    SnackBar(content: Text("Logout successful")),
+                                  );
+                                }).catchError((error) {
+                                  scaffoldMessengerKey.currentState?.showSnackBar(
+                                    SnackBar(
+                                      content: Text("Logout failed: $error"),
+                                    ),
+                                  );
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        loading: () => const Expanded(child: Center(child: CircularProgressIndicator())),
+        error: (e, _) => Expanded(child: Text("Erreur : $e")),
       ),
     );
   }

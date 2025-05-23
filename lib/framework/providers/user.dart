@@ -4,21 +4,21 @@ import 'package:taskly/framework/models/task.dart';
 import 'package:taskly/framework/providers/auth.dart';
 import 'package:taskly/framework/repositories/user_repository.dart';
 
-final currentUserProvider = FutureProvider<AppUser>((ref) async {
-  final authUser = await ref.watch(authStateProvider.future);
-  if (authUser == null) {
-    throw Exception("No user logged in");
-  }
-  final userRepo = ref.read(userRepositoryProvider);
-  final userProfile = await userRepo.getUserProfile(authUser.uid);
-  if (userProfile == null) {
-    throw Exception("User profile not found");
-  }
-  return userProfile;
+final currentAppUserProvider = StreamProvider<AppUser?>((ref) {
+  final firebaseUser = ref.watch(authStateProvider);
+
+  return firebaseUser.when(
+    data: (user) {
+      if (user == null) return Stream.value(null);
+      return ref.watch(userRepositoryProvider).watchAppUser(user.uid);
+    },
+    loading: () => const Stream.empty(),
+    error: (_, __) => const Stream.empty(),
+  );
 });
 
 final currentUserTasksProvider = StreamProvider.autoDispose<List<Task>>((ref) {
-  final currentUser = ref.watch(currentUserProvider);
+  final currentUser = ref.watch(currentAppUserProvider);
   if (currentUser.isLoading) {
     return const Stream.empty();
   }
