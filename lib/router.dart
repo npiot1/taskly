@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taskly/application/account_screen/account.dart';
 import 'package:taskly/application/home_screen/home.dart';
 import 'package:taskly/application/login_screen/login.dart';
 import 'package:taskly/application/login_screen/signup.dart';
@@ -21,9 +22,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           return authState.when(
             data: (user) {
               if (user == null) {
-                return LoginScreen(); // non connecté
+                return LoginScreen();
               } else {
-                return const HomeScreen(); // connecté
+                return const HomeScreen();
               }
             },
             loading:
@@ -47,6 +48,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
+      GoRoute(path: '/account', builder: (context, state) => AccountScreen()),
     ],
   );
 });

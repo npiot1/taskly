@@ -19,7 +19,7 @@ class UserRepository {
   Stream<AppUser?> watchAppUser(String uid) {
     return _firestore.collection('users').doc(uid).snapshots().map((doc) {
       if (!doc.exists) return null;
-      return AppUser.fromJson(doc.data()!);
+      return AppUser.fromJson(doc.data()!).copyWith(id: doc.id);
     });
   }
 
@@ -46,7 +46,7 @@ class UserRepository {
         return null;
       }
 
-      return AppUser.fromJson(doc.data()!);
+      return AppUser.fromJson(doc.data()!).copyWith(id: doc.id);
     } catch (e) {
       throw Exception("Error fetching user profile: ${e.toString()}");
     }
@@ -126,6 +126,19 @@ class UserRepository {
     try {
       await _firestore.collection('tasks').doc(taskId).delete();
       return Result.success(true, "Task deleted successfully");
+    } catch (e) {
+      return Result.failure(e.toString());
+    }
+  }
+
+  Future<Result<bool>> updateUser(AppUser user) async {
+    try {
+      await _firestore.collection('users').doc(user.id).update({
+        'pseudo': user.pseudo,
+        'photoUrl': user.photoUrl,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      return Result.success(true, "User updated successfully");
     } catch (e) {
       return Result.failure(e.toString());
     }

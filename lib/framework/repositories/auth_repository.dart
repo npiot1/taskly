@@ -67,6 +67,25 @@ class AuthRepository {
     }
   }
 
+  Future<Result> reAuthenticate(String password) async {
+    
+    User? user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return Result.failure("No user is currently logged in.");
+    }
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: password,
+      );
+      await user.reauthenticateWithCredential(credential);
+      return Result.success(null, "Reauthentication successful!");
+    } catch (e) {
+      return Result.failure("Error reauthenticating (${e.toString()})");
+    }
+
+  }
+
   Future<Result> logout() async {
     try {
       await _firebaseAuth.signOut();
@@ -77,4 +96,32 @@ class AuthRepository {
   }
 
   User? getCurrentUser() => _firebaseAuth.currentUser;
+
+  Future<Result> updateEmail(String email) async {
+    User? user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return Result.failure("No user is currently logged in.");
+    }
+    try {
+      await user.verifyBeforeUpdateEmail(email);
+      await user.reload();
+      return Result.success(null, "Email updated successfully!");
+    } catch (e) {
+      return Result.failure("Error updating email (${e.toString()})");
+    }
+  }
+
+  Future<Result> updatePassword(String password) async {
+    User? user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return Result.failure("No user is currently logged in.");
+    }
+    try {
+      await user.updatePassword(password);
+      await user.reload();
+      return Result.success(null, "Password updated successfully!");
+    } catch (e) {
+      return Result.failure("Error updating password (${e.toString()})");
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:taskly/application/account_screen/account_controller.dart';
 import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
@@ -23,31 +24,25 @@ class DrawerWidget extends ConsumerWidget {
       child: user.when(
         data: (user) {
           if (user == null) {
-            return const Expanded(
-              child: Center(
-                child: Text("user not found"),
-              ),
-            );
+            return const Expanded(child: Center(child: Text("user not found")));
           }
           return Column(
             children: [
               DrawerHeader(
-                decoration: BoxDecoration(
-                  color: ApplicationColors.MAIN_COLOR,
-                ),
+                decoration: BoxDecoration(color: ApplicationColors.MAIN_COLOR),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      user.photoUrl != null
+                      user.photoUrl != null && user.photoUrl!.isNotEmpty
                           ? CircleAvatar(
-                              backgroundImage: NetworkImage(user.photoUrl!),
-                              radius: 40,
-                            )
+                            backgroundImage: NetworkImage(user.photoUrl!),
+                            radius: 40,
+                          )
                           : CircleAvatar(
-                              radius: 40,
-                              child: Icon(Icons.person, size: 40),
-                            ),
+                            radius: 40,
+                            child: Icon(Icons.person, size: 40),
+                          ),
                       SizedBox(height: 10),
                       Text(
                         user.pseudo,
@@ -70,7 +65,10 @@ class DrawerWidget extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ListTile(
-                            leading: Icon(Icons.email, color: ApplicationColors.MAIN_COLOR),
+                            leading: Icon(
+                              Icons.email,
+                              color: ApplicationColors.MAIN_COLOR,
+                            ),
                             title: Text(
                               "Email",
                               style: TextStyle(
@@ -80,12 +78,17 @@ class DrawerWidget extends ConsumerWidget {
                             ),
                             subtitle: Text(
                               auth.value?.email ?? "Not available",
-                              style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
+                              style: TextStyle(
+                                fontSize: AppFontSize.MEDIUM_TEXT,
+                              ),
                             ),
                           ),
                           Divider(),
                           ListTile(
-                            leading: Icon(Icons.calendar_today, color: ApplicationColors.MAIN_COLOR),
+                            leading: Icon(
+                              Icons.calendar_today,
+                              color: ApplicationColors.MAIN_COLOR,
+                            ),
                             title: Text(
                               "Account Created",
                               style: TextStyle(
@@ -95,7 +98,9 @@ class DrawerWidget extends ConsumerWidget {
                             ),
                             subtitle: Text(
                               user.createdAt.toSpokenLanguage(),
-                              style: TextStyle(fontSize: AppFontSize.MEDIUM_TEXT),
+                              style: TextStyle(
+                                fontSize: AppFontSize.MEDIUM_TEXT,
+                              ),
                             ),
                           ),
                         ],
@@ -109,13 +114,23 @@ class DrawerWidget extends ConsumerWidget {
                           SizedBox(
                             width: double.infinity,
                             child: AppButton(
-                              icon: Icon(Icons.account_circle, size: 20, color: Colors.white),
+                              icon: Icon(
+                                Icons.account_circle,
+                                size: 20,
+                                color: Colors.white,
+                              ),
                               isIconLeading: true,
                               margin: const EdgeInsets.symmetric(vertical: 10),
                               color: ApplicationColors.MAIN_COLOR,
                               text: "Account",
                               colorText: ApplicationColors.WHITE,
                               action: () {
+                                ref
+                                    .read(accountControllerProvider.notifier)
+                                    .initState();
+                                if (Scaffold.of(context).isDrawerOpen) {
+                                  Navigator.of(context).pop();
+                                }
                                 context.push('/account');
                               },
                             ),
@@ -123,7 +138,11 @@ class DrawerWidget extends ConsumerWidget {
                           SizedBox(
                             width: double.infinity,
                             child: AppButton(
-                              icon: Icon(Icons.settings, size: 20, color: Colors.white),
+                              icon: Icon(
+                                Icons.settings,
+                                size: 20,
+                                color: Colors.white,
+                              ),
                               isIconLeading: true,
                               margin: const EdgeInsets.symmetric(vertical: 10),
                               color: ApplicationColors.MAIN_COLOR,
@@ -137,7 +156,11 @@ class DrawerWidget extends ConsumerWidget {
                           SizedBox(
                             width: double.infinity,
                             child: AppButton(
-                              icon: Icon(Icons.logout, size: 20, color: Colors.white),
+                              icon: Icon(
+                                Icons.logout,
+                                size: 20,
+                                color: Colors.white,
+                              ),
                               isIconLeading: true,
                               margin: const EdgeInsets.symmetric(vertical: 10),
                               color: Colors.red,
@@ -145,15 +168,21 @@ class DrawerWidget extends ConsumerWidget {
                               colorText: ApplicationColors.WHITE,
                               action: () {
                                 var auth = ref.read(authRepositoryProvider);
-                                auth.logout().then((value) {
-                                  value.showNotification();
-                                }).catchError((error) {
-                                  scaffoldMessengerKey.currentState?.showSnackBar(
-                                    SnackBar(
-                                      content: Text("Logout failed: $error"),
-                                    ),
-                                  );
-                                });
+                                auth
+                                    .logout()
+                                    .then((value) {
+                                      value.showNotification();
+                                    })
+                                    .catchError((error) {
+                                      scaffoldMessengerKey.currentState
+                                          ?.showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "Logout failed: $error",
+                                              ),
+                                            ),
+                                          );
+                                    });
                               },
                             ),
                           ),
@@ -166,7 +195,10 @@ class DrawerWidget extends ConsumerWidget {
             ],
           );
         },
-        loading: () => const Expanded(child: Center(child: CircularProgressIndicator())),
+        loading:
+            () => const Expanded(
+              child: Center(child: CircularProgressIndicator()),
+            ),
         error: (e, _) => Expanded(child: Text("Erreur : $e")),
       ),
     );

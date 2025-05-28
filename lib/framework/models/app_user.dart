@@ -8,6 +8,7 @@ part 'app_user.g.dart';
 @freezed
 abstract class AppUser with _$AppUser {
     const factory AppUser({
+        String? id,
         required String pseudo,
         @TimestampConverter() required DateTime createdAt,
         String? photoUrl,

@@ -10,7 +10,6 @@ import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/repositories/auth_repository.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/framework/widgets/input.dart';
-import 'package:taskly/main.dart';
 
 class SignUpScreen extends ConsumerWidget {
   SignUpScreen({super.key});
