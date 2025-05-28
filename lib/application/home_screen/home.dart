@@ -12,7 +12,6 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       drawer: DrawerWidget(),
-      backgroundColor: ApplicationColors.WHITE,
       appBar: AppBar(title: Text('Home Screen')),
       body: Center(
         child: Column(

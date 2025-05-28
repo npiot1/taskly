@@ -66,6 +66,10 @@ dependencies:
   json_serializable: ^6.9.5
   json_annotation: 
 
+  #Local storage
+  hive: ^2.2.3
+  path_provider: ^2.1.5
+
   # UI packages
   flutter_svg: ^2.1.0
   flutter_native_splash: ^2.4.6

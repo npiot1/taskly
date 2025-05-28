@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:hive/hive.dart';
+import 'package:taskly/application/settings_screen/settings_controller.dart';
 import 'package:taskly/router.dart';
 import 'firebase_options.dart';
 
@@ -12,6 +15,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  SettingsController.initBox();
   runApp(ProviderScope(child: const MyApp()));
 }
 
@@ -21,18 +27,29 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
-    
+    final settings = ref.watch(settingsProvider);
+    var themeMode = settings.isDarkMode ? ThemeMode.dark : ThemeMode.light;
     return MaterialApp.router(
       scaffoldMessengerKey: scaffoldMessengerKey,
       title: 'Flutter Demo',
       theme: ThemeData(
-          appBarTheme: const AppBarTheme(
+        brightness: Brightness.light,
+        appBarTheme: const AppBarTheme(
           backgroundColor: Colors.deepPurple,
-          foregroundColor: Colors.white, 
-          elevation: 0, 
+          foregroundColor: Colors.white,
+          elevation: 0,
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+
+      ),
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:taskly/application/home_screen/home.dart';
 import 'package:taskly/application/login_screen/login.dart';
 import 'package:taskly/application/login_screen/signup.dart';
+import 'package:taskly/application/settings_screen/settings.dart';
 import 'package:taskly/application/task_screens/create_task.dart';
 import 'package:taskly/application/task_screens/edit_task.dart';
 import 'package:taskly/framework/providers/auth.dart';
@@ -45,6 +46,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return EditTaskScreen(id: taskId);
         },
       ),
+      GoRoute(path: '/settings', builder: (context, state) => SettingsScreen()),
     ],
   );
 });

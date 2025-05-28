@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
@@ -115,7 +116,7 @@ class DrawerWidget extends ConsumerWidget {
                               text: "Account",
                               colorText: ApplicationColors.WHITE,
                               action: () {
-                                Navigator.pushNamed(context, '/account');
+                                context.push('/account');
                               },
                             ),
                           ),
@@ -129,7 +130,7 @@ class DrawerWidget extends ConsumerWidget {
                               text: "Settings",
                               colorText: ApplicationColors.WHITE,
                               action: () {
-                                Navigator.pushNamed(context, '/settings');
+                                context.push('/settings');
                               },
                             ),
                           ),
