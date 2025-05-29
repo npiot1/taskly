@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:taskly/application/account_screen/account_controller.dart';
 import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/business/task_state.dart';
+import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/providers/auth.dart';
+import 'package:taskly/framework/widgets/button.dart';
 
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({Key? key}) : super(key: key);
@@ -99,78 +101,84 @@ class AccountScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed:
-                    taskState is TaskLoading
-                        ? null
-                        : () async {
-                          if (!formKey.currentState!.validate()) return;
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  color: ApplicationColors.MAIN_COLOR,
+                  colorText: ApplicationColors.WHITE,
+                  text: 'Save Changes',
+                  action:
+                      taskState is TaskLoading
+                          ? null
+                          : () async {
+                            if (!formKey.currentState!.validate()) return;
 
-                          final controller = ref.read(
-                            accountControllerProvider.notifier,
-                          );
+                            final controller = ref.read(
+                              accountControllerProvider.notifier,
+                            );
 
-                          var confirmResult = Result.success();
-                          if (emailController.text != authUser.email ||
-                              passwordController.text.isNotEmpty) {
-                            await askPassword(context).then((password) async {
-                               if (password.isFailure) {
-                                confirmResult = Result.failure(password.errorMessage!);
-                                return;
-                              } else {
-                                final reAuthResult = await controller
-                                    .reAuthenticate(password.data!);
-                                if (reAuthResult.isFailure) {
+                            var confirmResult = Result.success();
+                            if (emailController.text != authUser.email ||
+                                passwordController.text.isNotEmpty) {
+                              await askPassword(context).then((password) async {
+                                if (password.isFailure) {
                                   confirmResult = Result.failure(
-                                    reAuthResult.errorMessage!,
+                                    password.errorMessage!,
                                   );
                                   return;
+                                } else {
+                                  final reAuthResult = await controller
+                                      .reAuthenticate(password.data!);
+                                  if (reAuthResult.isFailure) {
+                                    confirmResult = Result.failure(
+                                      reAuthResult.errorMessage!,
+                                    );
+                                    return;
+                                  }
                                 }
-                              }
-                            });
-                          }
-                          
-                          if (confirmResult.isFailure) {
-                            confirmResult.showNotification();
-                            return;
-                          }
+                              });
+                            }
 
-                          Result emailResult = const Result.success();
-                          if (emailController.text != authUser.email) {
-                            controller.updateEmailState(emailController.text);
-                            emailResult = await controller.updateEmail();
-                          }
+                            if (confirmResult.isFailure) {
+                              confirmResult.showNotification();
+                              return;
+                            }
 
-                          Result passwordResult = const Result.success();
-                          if (passwordController.text.isNotEmpty) {
-                            controller.updatePasswordState(
-                              passwordController.text,
-                            );
-                            passwordResult = await controller.updatePassword();
-                          }
+                            Result emailResult = const Result.success();
+                            if (emailController.text != authUser.email) {
+                              controller.updateEmailState(emailController.text);
+                              emailResult = await controller.updateEmail();
+                            }
 
-                          controller.updatePseudo(pseudoController.text);
-                          controller.updatePhotoUrl(photoController.text);
-                          final userResult = await controller.updateUser();
+                            Result passwordResult = const Result.success();
+                            if (passwordController.text.isNotEmpty) {
+                              controller.updatePasswordState(
+                                passwordController.text,
+                              );
+                              passwordResult =
+                                  await controller.updatePassword();
+                            }
 
-                          if (emailResult.isFailure) {
-                            emailResult.showNotification();
-                          } else if (passwordResult.isFailure) {
-                            passwordResult.showNotification();
-                          } else if (userResult.isFailure) {
-                            userResult.showNotification();
-                          } else {
-                            Result.success(
-                              null,
-                              'Account updated successfully',
-                            ).showNotification();
-                            context.pop();
-                          }
-                        },
-                child:
-                    taskState is TaskLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('Save Changes'),
+                            controller.updatePseudo(pseudoController.text);
+                            controller.updatePhotoUrl(photoController.text);
+                            final userResult = await controller.updateUser();
+
+                            if (emailResult.isFailure) {
+                              emailResult.showNotification();
+                            } else if (passwordResult.isFailure) {
+                              passwordResult.showNotification();
+                            } else if (userResult.isFailure) {
+                              userResult.showNotification();
+                            } else {
+                              Result.success(
+                                null,
+                                'Account updated successfully',
+                              ).showNotification();
+                              context.pop();
+                            }
+                          },
+                  buttonState: taskState,
+                ),
               ),
             ],
           ),
@@ -185,27 +193,28 @@ Future<Result<String>> askPassword(BuildContext context) async {
 
   final result = await showDialog<String>(
     context: context,
-    builder: (_) => AlertDialog(
-      title: const Text('Confirm your password'),
-      content: TextField(
-        controller: controller,
-        obscureText: true,
-        decoration: const InputDecoration(labelText: 'Password'),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, null),
-          child: const Text('Cancel'),
+    builder:
+        (_) => AlertDialog(
+          title: const Text('Confirm your password'),
+          content: TextField(
+            controller: controller,
+            obscureText: true,
+            decoration: const InputDecoration(labelText: 'Password'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final password = controller.text.trim();
+                Navigator.pop(context, password.isNotEmpty ? password : null);
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
         ),
-        TextButton(
-          onPressed: () {
-            final password = controller.text.trim();
-            Navigator.pop(context, password.isNotEmpty ? password : null);
-          },
-          child: const Text('Confirm'),
-        ),
-      ],
-    ),
   );
 
   if (result != null) {

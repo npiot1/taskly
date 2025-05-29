@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
+import 'package:taskly/framework/models/task.dart';
 
 class AppButton extends StatelessWidget {
   const AppButton({
@@ -22,6 +24,7 @@ class AppButton extends StatelessWidget {
     this.isIconLeading = false,
     this.isIconTrailing = false,
     this.isIconOnly = false,
+    this.buttonState
   });
 
   final Color color;
@@ -41,6 +44,7 @@ class AppButton extends StatelessWidget {
   final bool isIconLeading;
   final bool isIconTrailing;
   final bool isIconOnly;
+  final TaskState? buttonState;
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +102,10 @@ class AppButton extends StatelessWidget {
         style: ButtonStyle(
           padding: WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: paddingHorizontal, vertical: paddingVertical)),
-          backgroundColor: WidgetStatePropertyAll<Color>(
-              isFilledButton ? (isActive ? color : ApplicationColors.GREY_2) : Colors.white),
+            backgroundColor: WidgetStatePropertyAll<Color>(
+              buttonState is TaskLoading
+                ? color
+                : (isFilledButton ? (isActive ? color : ApplicationColors.GREY_2) : Colors.white)),
           shape: !noRadius!
               ? specificCornerRadius != null
                   ? WidgetStatePropertyAll<RoundedRectangleBorder>(
@@ -112,7 +118,18 @@ class AppButton extends StatelessWidget {
                           side: BorderSide(color: isFilledButton ? Colors.transparent : color, width: 2)))
               : null,
         ),
-        child: buildContent(),
+        child: buttonState is TaskLoading
+  ? SizedBox(
+      height: 20,
+      width: 20,
+      child: CircularProgressIndicator(
+        backgroundColor: color,
+        strokeWidth: 2,
+        valueColor: AlwaysStoppedAnimation<Color>(colorText),
+      ),
+    )
+  : buildContent(),
+
       ),
     );
   }

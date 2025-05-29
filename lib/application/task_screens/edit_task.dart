@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskly/application/task_screens/task_controller.dart';
 import 'package:taskly/framework/business/task_state.dart';
+import 'package:taskly/framework/constants/app_style.dart';
+import 'package:taskly/framework/constants/app_utils.dart';
+import 'package:taskly/framework/widgets/button.dart';
 
 class EditTaskScreen extends ConsumerWidget {
   final String id;
@@ -133,8 +136,12 @@ class EditTaskScreen extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
+              AppButton(
+                color: ApplicationColors.MAIN_COLOR,
+                colorText: ApplicationColors.WHITE,
+              text: 'Save Changes',
+              buttonState: fetchState,
+              action: () {
                   if (_formKey.currentState!.validate()) {
                     final updatedTask = taskState.copyWith(
                       name: nameController.text,
@@ -144,9 +151,8 @@ class EditTaskScreen extends ConsumerWidget {
                     taskController.updateTask(updatedTask);
                     context.pop();
                   }
-                },
-                child: const Text('Save Changes'),
-              ),
+              }, 
+              )
             ],
           ),
         ),
