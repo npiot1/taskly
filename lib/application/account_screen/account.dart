@@ -45,31 +45,29 @@ class AccountScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-                Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Email required';
-                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Invalid email format';
-                    }
-                    return null;
-                  },
+                    controller: emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'Email required';
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Invalid email format';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                  'You must verify your email after changing it to be considered.',
-                  style: TextStyle(
-                    color: Colors.orange,
-                    fontSize: 12,
-                  ),
+                    'You must verify your email after changing it to be considered.',
+                    style: TextStyle(color: Colors.orange, fontSize: 12),
                   ),
                 ],
-                ),
+              ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: passwordController,
@@ -112,24 +110,29 @@ class AccountScreen extends ConsumerWidget {
                             accountControllerProvider.notifier,
                           );
 
-                  
+                          var confirmResult = Result.success();
                           if (emailController.text != authUser.email ||
                               passwordController.text.isNotEmpty) {
                             await askPassword(context).then((password) async {
-                              if (password == null || password.isEmpty) {
-                                Result.failure(
-                                  'Password confirmation is required',
-                                ).showNotification();
+                               if (password.isFailure) {
+                                confirmResult = Result.failure(password.errorMessage!);
                                 return;
                               } else {
                                 final reAuthResult = await controller
-                                    .reAuthenticate(password);
+                                    .reAuthenticate(password.data!);
                                 if (reAuthResult.isFailure) {
-                                  reAuthResult.showNotification();
+                                  confirmResult = Result.failure(
+                                    reAuthResult.errorMessage!,
+                                  );
                                   return;
                                 }
                               }
                             });
+                          }
+                          
+                          if (confirmResult.isFailure) {
+                            confirmResult.showNotification();
+                            return;
                           }
 
                           Result emailResult = const Result.success();
@@ -177,29 +180,37 @@ class AccountScreen extends ConsumerWidget {
   }
 }
 
-Future<String?> askPassword(BuildContext context) async {
+Future<Result<String>> askPassword(BuildContext context) async {
   final controller = TextEditingController();
 
-  return showDialog<String>(
+  final result = await showDialog<String>(
     context: context,
-    builder:
-        (_) => AlertDialog(
-          title: Text('Confirm your password'),
-          content: TextField(
-            controller: controller,
-            obscureText: true,
-            decoration: InputDecoration(labelText: 'Password'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, null),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, controller.text),
-              child: Text('Confirm'),
-            ),
-          ],
+    builder: (_) => AlertDialog(
+      title: const Text('Confirm your password'),
+      content: TextField(
+        controller: controller,
+        obscureText: true,
+        decoration: const InputDecoration(labelText: 'Password'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, null),
+          child: const Text('Cancel'),
         ),
+        TextButton(
+          onPressed: () {
+            final password = controller.text.trim();
+            Navigator.pop(context, password.isNotEmpty ? password : null);
+          },
+          child: const Text('Confirm'),
+        ),
+      ],
+    ),
   );
+
+  if (result != null) {
+    return Result.success(result);
+  } else {
+    return const Result.failure("Confirmation canceled or empty password");
+  }
 }
