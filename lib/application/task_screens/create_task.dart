@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:taskly/application/task_screens/task_controller.dart';
 import 'package:taskly/framework/business/task_state.dart';
+import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/models/task.dart';
 import 'package:taskly/framework/providers/auth.dart';
+import 'package:taskly/framework/widgets/button.dart';
 
 class CreateTaskScreen extends ConsumerWidget {
   CreateTaskScreen({Key? key}) : super(key: key);
@@ -126,30 +128,33 @@ class CreateTaskScreen extends ConsumerWidget {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      var currentUser = ref.read(authStateProvider).value;
-                      final newTask = Task(
-                        completed: false,
-                        description: _descriptionController.text,
-                        dueDate: DateTime.parse(_dueDateController.text),
-                        name: _titleController.text,
-                        priority: int.parse(_priorityController.text),
-                        userId: currentUser!.uid, 
-                      );
-
-                      await taskController.createTask(newTask);
-
-                      context.push("/home");
-                    }
-                  },
-                  child:
-                      taskState is TaskLoading
-                          ? CircularProgressIndicator()
-                          : const Text('Create Task'),
-                ),
+                const SizedBox(height: 24),
+                              Container(
+                                width: double.infinity,
+                                child: AppButton(
+                                                color: ApplicationColors.MAIN_COLOR,
+                                                colorText: ApplicationColors.WHITE,
+                                              text: 'Save Changes',
+                                              buttonState: taskState,
+                                              action: () async {
+                                                    if (_formKey.currentState!.validate()) {
+                                                      var currentUser = ref.read(authStateProvider).value;
+                                                      final newTask = Task(
+                                                        completed: false,
+                                                        description: _descriptionController.text,
+                                                        dueDate: DateTime.parse(_dueDateController.text),
+                                                        name: _titleController.text,
+                                                        priority: int.parse(_priorityController.text),
+                                                        userId: currentUser!.uid, 
+                                                      );
+                                
+                                                      await taskController.createTask(newTask);
+                                
+                                                      context.push("/home");
+                                                    }
+                                              }, 
+                                              ),
+                              ),
               ],
             ),
           ),
