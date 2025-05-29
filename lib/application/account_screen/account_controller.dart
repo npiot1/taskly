@@ -96,5 +96,17 @@ class AccountController extends StateNotifier<AccountScreenState> {
     }
   }
 
+  Future<Result> deleteAccount(String id) async {
+    state = state.copyWith(state: const TaskState.loading());
+    try {
+      var res = ref.read(authRepositoryProvider).deleteAccount(id);
+      state = state.copyWith(state: const TaskState.success());
+      return res;
+    } catch (e) {
+      state = state.copyWith(state: TaskState.error(e.toString()));
+      return Result.failure(e.toString());
+    }
+  }
+
 
 }

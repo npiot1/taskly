@@ -124,4 +124,17 @@ class AuthRepository {
       return Result.failure("Error updating password (${e.toString()})");
     }
   }
+
+  Future<Result> deleteAccount(String id) async {
+    User? user = _firebaseAuth.currentUser;
+    if (user == null) {
+      return Result.failure("No user is currently logged in.");
+    }
+    try {
+      await user.delete();
+      return Result.success(null, "Account deleted successfully!");
+    } catch (e) {
+      return Result.failure("Error deleting account (${e.toString()})");
+    }
+  }
 }

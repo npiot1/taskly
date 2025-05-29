@@ -180,6 +180,68 @@ class AccountScreen extends ConsumerWidget {
                   buttonState: taskState,
                 ),
               ),
+              const Spacer(),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 32),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.red),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Danger Zone',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    AppButton(
+                      color: Colors.red,
+                      colorText: ApplicationColors.WHITE,
+                      text: 'Delete Account',
+                      action: () async {
+                        final passwordResult = await askPassword(context);
+                        final controller = ref.read(
+                          accountControllerProvider.notifier,
+                        );
+                        if (passwordResult.isFailure) {
+                          passwordResult.showNotification();
+                          return;
+                        } else {
+                          final reAuthResult = await controller.reAuthenticate(
+                            passwordResult.data!,
+                          );
+                          if (reAuthResult.isFailure) {
+                            Result.failure(
+                              reAuthResult.errorMessage!,
+                            ).showNotification();
+                            return;
+                          }
+                        }
+
+                        final result = await controller.deleteAccount(
+                          passwordResult.data!,
+                        );
+                        if (result.isSuccess) {
+                          Result.success(
+                            null,
+                            "Account deleted",
+                          ).showNotification();
+                          context.go('/');
+                        } else {
+                          result.showNotification();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
