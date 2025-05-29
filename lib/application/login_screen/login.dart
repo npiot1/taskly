@@ -50,7 +50,7 @@ class LoginScreen extends ConsumerWidget {
                             controller: passwordController,
                             label: "Password",
                             hintText: "******",
-                            obscureText: true,
+                            isPassword: true,
                             textSize: AppFontSize.XXLARGE_TEXT,
                           ),
                           const SizedBox(height: 24),

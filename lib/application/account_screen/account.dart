@@ -6,7 +6,9 @@ import 'package:taskly/framework/business/result.dart';
 import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/providers/auth.dart';
+import 'package:taskly/framework/utils/reauth_dialog.dart';
 import 'package:taskly/framework/widgets/button.dart';
+import 'package:taskly/framework/widgets/password_field.dart';
 
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class AccountScreen extends ConsumerWidget {
     final pseudoController = TextEditingController(text: appUser.pseudo);
     final photoController = TextEditingController(text: appUser.photoUrl ?? '');
     final passwordController = TextEditingController();
+    final repeatPasswordController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -71,13 +74,24 @@ class AccountScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              TextFormField(
+              PasswordField(
                 controller: passwordController,
                 decoration: const InputDecoration(labelText: 'New Password'),
-                obscureText: true,
                 validator: (value) {
                   if (value != null && value.isNotEmpty && value.length < 6) {
                     return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: repeatPasswordController,
+                decoration: const InputDecoration(labelText: 'Repeat New Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value != null && value.isNotEmpty && value != passwordController.text) {
+                    return 'Passwords do not match';
                   }
                   return null;
                 },
@@ -112,6 +126,14 @@ class AccountScreen extends ConsumerWidget {
                           ? null
                           : () async {
                             if (!formKey.currentState!.validate()) return;
+
+                            if (passwordController.text.isNotEmpty &&
+                                passwordController.text != repeatPasswordController.text) {
+                              Result.failure(
+                                'Passwords do not match',
+                              ).showNotification();
+                              return;
+                            }
 
                             final controller = ref.read(
                               accountControllerProvider.notifier,
@@ -186,7 +208,7 @@ class AccountScreen extends ConsumerWidget {
                 margin: const EdgeInsets.only(top: 32),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.05),
+                  color: Colors.red.withAlpha(5),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.red),
                 ),
@@ -247,41 +269,5 @@ class AccountScreen extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-Future<Result<String>> askPassword(BuildContext context) async {
-  final controller = TextEditingController();
-
-  final result = await showDialog<String>(
-    context: context,
-    builder:
-        (_) => AlertDialog(
-          title: const Text('Confirm your password'),
-          content: TextField(
-            controller: controller,
-            obscureText: true,
-            decoration: const InputDecoration(labelText: 'Password'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, null),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final password = controller.text.trim();
-                Navigator.pop(context, password.isNotEmpty ? password : null);
-              },
-              child: const Text('Confirm'),
-            ),
-          ],
-        ),
-  );
-
-  if (result != null) {
-    return Result.success(result);
-  } else {
-    return const Result.failure("Confirmation canceled or empty password");
   }
 }

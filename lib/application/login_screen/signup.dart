@@ -17,6 +17,7 @@ class SignUpScreen extends ConsumerWidget {
   final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,6 +58,14 @@ class SignUpScreen extends ConsumerWidget {
                             controller: passwordController,
                             label: "Password",
                             hintText: "Create a password",
+                            isPassword: true,
+                            textSize: AppFontSize.XXLARGE_TEXT,
+                          ),
+                          const SizedBox(height: 16),
+                          CustomTextInput(
+                            controller: confirmPasswordController,
+                            label: "Confirm Password",
+                            hintText: "Re-enter your password",
                             obscureText: true,
                             textSize: AppFontSize.XXLARGE_TEXT,
                           ),
@@ -70,6 +79,11 @@ class SignUpScreen extends ConsumerWidget {
                                 color: ApplicationColors.GREY_2,
                                 text: "Sign Up",
                                 action: () async {
+                                  if (passwordController.text != confirmPasswordController.text) {
+                                    Result.failure("Passwords do not match").showNotification();
+                                    return;
+                                  }
+
                                   final auth = ref.read(authRepositoryProvider);
 
                                   var res = await auth.signUp(
