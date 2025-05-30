@@ -9,6 +9,7 @@ import 'package:taskly/framework/providers/auth.dart';
 import 'package:taskly/framework/providers/user.dart';
 import 'package:taskly/framework/repositories/auth_repository.dart';
 import 'package:taskly/framework/utils/date.dart';
+import 'package:taskly/framework/utils/ui_helpers.dart';
 import 'package:taskly/framework/widgets/button.dart';
 import 'package:taskly/main.dart';
 
@@ -36,7 +37,7 @@ class DrawerWidget extends ConsumerWidget {
                     children: [
                       user.photoUrl != null && user.photoUrl!.isNotEmpty
                           ? CircleAvatar(
-                            backgroundImage: NetworkImage(user.photoUrl!),
+                            backgroundImage: buildProfileImage(user.photoUrl!),
                             radius: 40,
                           )
                           : CircleAvatar(

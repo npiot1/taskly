@@ -1,5 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:taskly/framework/business/result.dart';
+
+ImageProvider buildProfileImage(String imagePathOrUrl) {
+  if (imagePathOrUrl.startsWith('http')) {
+    return NetworkImage(imagePathOrUrl);
+  } else {
+    return FileImage(File(imagePathOrUrl));
+  }
+}
 
 Future<Result<String>> askPassword(BuildContext context) async {
   final controller = TextEditingController();
