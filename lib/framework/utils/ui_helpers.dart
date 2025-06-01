@@ -46,3 +46,7 @@ Future<Result<String>> askPassword(BuildContext context) async {
     return const Result.failure("Confirmation canceled or empty password");
   }
 }
+
+String? formatDescription(String description) {
+  return description.trim().isEmpty || description.trim().replaceAll(RegExp(r'\s+'), '').isEmpty ? null : description.trim();
+}

@@ -10,7 +10,7 @@ abstract class Task with _$Task {
   const factory Task({
     String? id,
     required bool completed,
-    @Default("") String description,
+    String? description,
     @TimestampConverter() required DateTime dueDate,
     required String name,
     required int priority,

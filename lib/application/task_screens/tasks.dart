@@ -119,11 +119,11 @@ class TaskListScreen extends ConsumerWidget {
                             task.completed ? TextDecoration.lineThrough : null,
                       ),
                     ),
-                    subtitle: Text(
-                      task.description,
+                    subtitle: task.description != null ? Text(
+                      task.description!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                    ),
+                    ) : null,
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
                       context.push('/edit/${task.id}');

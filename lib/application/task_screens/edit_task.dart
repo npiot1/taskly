@@ -5,6 +5,7 @@ import 'package:taskly/application/task_screens/task_controller.dart';
 import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/constants/app_style.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
+import 'package:taskly/framework/utils/ui_helpers.dart';
 import 'package:taskly/framework/widgets/button.dart';
 
 class EditTaskScreen extends ConsumerWidget {
@@ -139,20 +140,22 @@ class EditTaskScreen extends ConsumerWidget {
               AppButton(
                 color: ApplicationColors.MAIN_COLOR,
                 colorText: ApplicationColors.WHITE,
-              text: 'Save Changes',
-              buttonState: fetchState,
-              action: () {
+                text: 'Save Changes',
+                buttonState: fetchState,
+                action: () {
                   if (_formKey.currentState!.validate()) {
                     final updatedTask = taskState.copyWith(
                       name: nameController.text,
-                      description: descriptionController.text,
+                      description: formatDescription(
+                        descriptionController.text,
+                      ),
                       priority: int.parse(priorityController.text),
                     );
                     taskController.updateTask(updatedTask);
                     context.pop();
                   }
-              }, 
-              )
+                },
+              ),
             ],
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:taskly/framework/business/task_state.dart';
 import 'package:taskly/framework/constants/app_utils.dart';
 import 'package:taskly/framework/models/task.dart';
 import 'package:taskly/framework/providers/auth.dart';
+import 'package:taskly/framework/utils/ui_helpers.dart';
 import 'package:taskly/framework/widgets/button.dart';
 
 class CreateTaskScreen extends ConsumerWidget {
@@ -54,12 +55,6 @@ class CreateTaskScreen extends ConsumerWidget {
                     labelText: 'Description',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
-                    }
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -141,7 +136,9 @@ class CreateTaskScreen extends ConsumerWidget {
                                                       var currentUser = ref.read(authStateProvider).value;
                                                       final newTask = Task(
                                                         completed: false,
-                                                        description: _descriptionController.text,
+                                                        description: formatDescription(
+                                                          _descriptionController.text,
+                                                        ),
                                                         dueDate: DateTime.parse(_dueDateController.text),
                                                         name: _titleController.text,
                                                         priority: int.parse(_priorityController.text),
